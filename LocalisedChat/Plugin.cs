@@ -95,9 +95,9 @@ namespace LocalisedChat
 			}
 
 			Color msgColor = new Color(p.Group.R, p.Group.G, p.Group.B);
-			NetMessage.SendData((int)PacketTypes.CreateCombatText, args.Who, -1,
+			NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1,
 				args.Text, (int)msgColor.PackedValue,
-				p.TPlayer.position.X, p.TPlayer.position.Y + 4);
+				p.TPlayer.position.X, p.TPlayer.position.Y + 16);
 
 			if (config.RadiusInFeet == -1)
 			{

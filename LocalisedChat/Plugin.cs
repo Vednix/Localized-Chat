@@ -42,7 +42,7 @@ namespace LocalisedChat
 		{
 			get
 			{
-				return new Version(1, 0);
+				return new Version(1, 1);
 			}
 		}
 
@@ -67,7 +67,6 @@ namespace LocalisedChat
 		private void OnReload(ReloadEventArgs e)
 		{
 			string path = Path.Combine(TShock.SavePath, "LocalChat.json");
-			if (!File.Exists(path))
 			{
 				config.Write(path);
 			}
@@ -97,7 +96,7 @@ namespace LocalisedChat
 			Color msgColor = new Color(p.Group.R, p.Group.G, p.Group.B);
 			NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1,
 				args.Text, (int)msgColor.PackedValue,
-				p.TPlayer.position.X, p.TPlayer.position.Y + 16);
+				p.TPlayer.position.X, p.TPlayer.position.Y + 32);
 
 			if (config.RadiusInFeet == -1)
 			{

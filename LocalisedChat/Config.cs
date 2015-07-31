@@ -27,7 +27,7 @@ namespace LocalisedChat
 
 		public void Read(string path)
 		{
-			if (!System.IO.File.Exists(path))
+			if (!File.Exists(path))
 				return;
 			using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 			{

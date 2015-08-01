@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Terraria;
 using TerrariaApi.Server;
 using TShockAPI;
@@ -13,6 +15,7 @@ namespace LocalisedChat
 	public class Plugin : TerrariaPlugin
 	{
 		public Config config = new Config();
+		public Regex TagRegex = new Regex(@"(?<!\\)\[(?<tag>[a-zA-Z]{1,10})(\/(?<options>[^:]+))?:(?<text>.+?)(?<!\\)\]");
 
 		public override string Author
 		{
@@ -93,9 +96,30 @@ namespace LocalisedChat
 				return;
 			}
 
+			Match match = TagRegex.Match(args.Text);
+
+			string text;
 			Color msgColor = new Color(p.Group.R, p.Group.G, p.Group.B);
+
+			string tag = match.Groups["tag"].Value;
+			if (tag != "c" && tag != "color")
+			{
+				//replace achievements and colours for pop-ups
+				text = TagRegex.Replace(args.Text, "");
+            }
+			else
+			{
+				text = TagRegex.Replace(args.Text, match.Groups["text"].Value ?? "");
+				string options = match.Groups["options"].Value;
+				int num;
+				if (int.TryParse(options, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out num))
+				{
+					msgColor = new Color(num >> 16 & 255, num >> 8 & 255, num & 255);
+                }
+			}
+
 			NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1,
-				args.Text, (int)msgColor.PackedValue,
+				text, (int)msgColor.PackedValue,
 				p.TPlayer.position.X, p.TPlayer.position.Y + 32);
 
 			if (config.RadiusInFeet == -1)
@@ -104,7 +128,7 @@ namespace LocalisedChat
 				return;
 			}
 
-			var text = String.Format(TShock.Config.ChatFormat, p.Group.Name,
+			text = String.Format(TShock.Config.ChatFormat, p.Group.Name,
 				p.Group.Prefix, p.Name, p.Group.Suffix, args.Text);
 
 			if (config.RadiusInFeet == 0)

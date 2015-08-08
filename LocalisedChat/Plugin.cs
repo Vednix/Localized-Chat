@@ -70,6 +70,7 @@ namespace LocalisedChat
 		private void OnReload(ReloadEventArgs e)
 		{
 			string path = Path.Combine(TShock.SavePath, "LocalChat.json");
+			if (!File.Exists(path))
 			{
 				config.Write(path);
 			}

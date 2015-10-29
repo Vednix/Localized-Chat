@@ -11,7 +11,7 @@ using TShockAPI.Hooks;
 
 namespace LocalisedChat
 {
-	[ApiVersion(1, 21)]
+	[ApiVersion(1, 22)]
 	public class Plugin : TerrariaPlugin
 	{
 		public Config config = new Config();

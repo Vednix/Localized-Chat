@@ -64,6 +64,7 @@ namespace LocalisedChat
 			config.Read(path);
 
 			ServerApi.Hooks.ServerChat.Register(this, OnChat, 5);
+			//Hooks into the /reload command, so that when /reload is used the config file is reloaded
 			GeneralHooks.ReloadEvent += OnReload;
 		}
 
@@ -81,25 +82,32 @@ namespace LocalisedChat
 		{
 			if (args.Handled)
 			{
+				//Do nothing if the event is already handled
 				return;
 			}
 
 			if (args.Text.StartsWith(TShock.Config.CommandSilentSpecifier)
 				|| args.Text.StartsWith(TShock.Config.CommandSpecifier))
 			{
+				//Do nothing if the text is a command
 				return;
 			}
 
+			//Grab the player who sent the text
 			TSPlayer p = TShock.Players[args.Who];
 
 			if (p == null)
 			{
+				//Do nothing if the player doesn't actually exist
 				return;
 			}
 
+			//Do a regex match to see if the text contains any chat tags
 			Match match = TagRegex.Match(args.Text);
 
+			//Declare a new string to be our altered text
 			string text;
+			//This is the colour the pop-up text and chat will be sent in. Default is the player's group text colour
 			Color msgColor = new Color(p.Group.R, p.Group.G, p.Group.B);
 
 			string tag = match.Groups["tag"].Value;
@@ -110,7 +118,9 @@ namespace LocalisedChat
             }
 			else
 			{
+				//Remove the tag (but leave any text contained in the tag)
 				text = TagRegex.Replace(args.Text, match.Groups["text"].Value ?? "");
+				//Attempt to parse a colour out of the tag
 				string options = match.Groups["options"].Value;
 				int num;
 				if (int.TryParse(options, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out num))
@@ -119,40 +129,48 @@ namespace LocalisedChat
                 }
 			}
 
+			//Send pop-up text of the chat message
 			NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1,
 				text, (int)msgColor.PackedValue,
 				p.TPlayer.position.X, p.TPlayer.position.Y + 32);
 
 			if (config.RadiusInFeet == -1)
 			{
-				//Don't handle
+				//-1 means everyone should receive a chat message, so return
 				return;
 			}
 
+			//Re-format the text for normal chat
 			text = String.Format(TShock.Config.ChatFormat, p.Group.Name,
 				p.Group.Prefix, p.Name, p.Group.Suffix, args.Text);
 
 			if (config.RadiusInFeet == 0)
 			{
+				//0 means no one should receive a chat message, so handle the event and return
 				args.Handled = true;
 				return;
 			}
 
+			//Get an enumerable object of all players in the config-defined chat range
 			IEnumerable<TSPlayer> plrList = TShock.Players.Where(
 					plr => plr != null &&
 						 plr != p &&
 						 plr.Active &&
 						 Vector2.Distance(plr.TPlayer.position, p.TPlayer.position) <= (config.RadiusInFeet*8));
 
-
+			//Send the message to the player who sent the message
+			//Sounds silly, but it's necessary
 			p.SendMessage(text, msgColor);
+			//Send the message to the server (console)
 			TSPlayer.Server.SendMessage(text, msgColor);
 
 			foreach (TSPlayer plr in plrList)
 			{
+				//Send the message to every player who was inside the config-defined chat range
 				plr.SendMessage(text, msgColor);
 			}
 
+			//Mark the event as handled, so that (hopefully) no other plugins will mess with the chat
 			args.Handled = true;
 		}
 

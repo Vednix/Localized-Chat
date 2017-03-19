@@ -35,15 +35,15 @@
       <HintPath>..\Refs\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="OTAPI">
-      <HintPath>..\..\..\..\Documents\Projects\_tshock\OTAPI.dll</HintPath>
+      <HintPath>..\Refs\OTAPI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="TerrariaServer">
-      <HintPath>..\..\..\..\Documents\Projects\_tshock\TerrariaServer.exe</HintPath>
+      <HintPath>..\Refs\TerrariaServer.exe</HintPath>
     </Reference>
     <Reference Include="TShockAPI">
-      <HintPath>..\..\..\..\Documents\Projects\_tshock\ServerPlugins\TShockAPI.dll</HintPath>
+      <HintPath>>..\Refs\TShockAPI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

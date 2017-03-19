@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.Xna.Framework;
 using Terraria;
 using TerrariaApi.Server;
 using TShockAPI;
@@ -11,7 +12,7 @@ using TShockAPI.Hooks;
 
 namespace LocalisedChat
 {
-	[ApiVersion(1, 25)]
+	[ApiVersion(2, 00)]
 	public class Plugin : TerrariaPlugin
 	{
 		public Config config = new Config();

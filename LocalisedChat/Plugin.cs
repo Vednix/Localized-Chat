@@ -12,45 +12,23 @@ using TShockAPI.Hooks;
 
 namespace LocalisedChat
 {
-	[ApiVersion(2, 00)]
+	[ApiVersion(2, 1)]
 	public class Plugin : TerrariaPlugin
 	{
 		public Config config = new Config();
 		public Regex TagRegex = new Regex(@"(?<!\\)\[(?<tag>[a-zA-Z]{1,10})(\/(?<options>[^:]+))?:(?<text>.+?)(?<!\\)\]");
 
-		public override string Author
-		{
-			get
-			{
-				return "White";
-			}
-		}
+        public override string Author => "Quicm";
 
-		public override string Description
-		{
-			get
-			{
-				return "Localised chat messages";
-			}
-		}
+        public override string Description => "Localised chat messages";
 
-		public override string Name
-		{
-			get
-			{
-				return "Localised chat";
-			}
-		}
+        public override string Name => "Localised chat";
 
-		public override Version Version
-		{
-			get
-			{
-				return new Version(1, 1);
-			}
-		}
 
-		public Plugin(Main game) : base(game)
+        public override Version Version => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+
+
+        public Plugin(Main game) : base(game)
 		{
 			Order = 0;
 		}
@@ -132,7 +110,7 @@ namespace LocalisedChat
 
 			//Send pop-up text of the chat message
 			NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1,
-				text, (int)msgColor.PackedValue,
+				Terraria.Localization.NetworkText.FromLiteral(text), (int)msgColor.PackedValue,
 				p.TPlayer.position.X, p.TPlayer.position.Y + 32);
 
 			if (config.RadiusInFeet == -1)

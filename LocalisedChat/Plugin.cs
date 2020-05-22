@@ -109,7 +109,7 @@ namespace LocalisedChat
 			}
 
 			//Send pop-up text of the chat message
-			NetMessage.SendData((int)PacketTypes.CreateCombatText, -1, -1,
+			NetMessage.SendData((int)PacketTypes.CreateCombatTextExtended, -1, -1,
 				Terraria.Localization.NetworkText.FromLiteral(text), (int)msgColor.PackedValue,
 				p.TPlayer.position.X, p.TPlayer.position.Y + 32);
 
